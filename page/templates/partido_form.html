@@ -1,0 +1,19 @@
+{% extends "pagInicial.html" %}
+
+{% block content %}
+
+{% load static %}
+
+
+<div class="container" style="height: 100px;"></div>
+<form method="post" enctype="multipart/form-data" style="height: 200px;">
+    <h1>Crear nuevo partido</h1>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Enviar</button>
+</form>
+
+
+
+
+{% endblock %}

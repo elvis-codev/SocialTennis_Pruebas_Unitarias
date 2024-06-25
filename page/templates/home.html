@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% load static %}
+
+<style>
+    .image-frame {
+        position: fixed;
+        bottom: 10px;
+        /* Ajusta la distancia desde la parte inferior */
+        left: 10px;
+        border: 2px solid #333;
+        padding: 10px;
+        background-color: #fff;
+        z-index: 1000;
+        width: 200px;
+        /* Ancho del banner */
+        height: 200px;
+        /* Alto del banner */
+    }
+
+    .image-frame img {
+        display: block;
+        margin: 0 auto;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: -15px;
+        right: -15px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        font-size: 20px;
+        cursor: pointer;
+    }
+</style>
+
+<div class="container banner">
+    <div class="row">
+        <div class="col-md-12">
+            <nav class="navbar navbar-md">
+                <div class="navbar-brand">Bplayer</div>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/home">INICIO</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/signin">REGISTRARSE</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">INICIAR SESION</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="show-weather-btn">VER CLIMA</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="col-md-6 offset-md-3 info">
+        <p class="text-center">Sé parte de la nueva comunidad de deportistas en Chile. Vive la experiencia Bplayer</p>
+        <a href="/signin" class="btn btn-md text-center">Iniciar la aventura</a>
+    </div>
+</div>
+
+
+<!-- Contenedor de la imagen con marco y botón de cierre -->
+<div id="imagen-container" class="image-frame">
+    <img id="imagen" src="" alt="Imagen">
+    <button class="close-btn" onclick="closeImage()">X</button>
+</div>
+
+<script>
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://raw.githubusercontent.com/elvis-codev/api_socialtennis/main/banner.json', true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+            var imageUrl = data.image_url;
+            document.getElementById('imagen').src = imageUrl;
+        }
+    };
+    xhr.send();
+
+    function closeImage() {
+        var imageContainer = document.getElementById('imagen-container');
+        imageContainer.style.display = 'none';
+    }
+</script>
+
+
+<!-- Código de la aplicación del clima -->
+<div class="weather-card-container">
+    <div class="card p-3 floating-card">
+        <h1>Clima Actual</h1>
+        <div id="weather-info" class="d-flex align-items-center justify-content-center flex-wrap">
+            <div class="weather-card">
+                <img src="{{ weather_data.icon_url }}" alt="Ícono del Clima" class="weather-icon">
+                <div class="weather-text">
+                    <p>{{ weather_data.location }}</p>
+                    <p class="temperature">{{ weather_data.temperature }}°C</p>
+                    <p>{{ weather_data.condition_text }}</p>
+                </div>
+            </div>
+        </div>
+        <button class="close-btn" onclick="closeWeatherCard()">X</button>
+    </div>
+</div>
+
+<style>
+    /* Estilos personalizados para la tarjeta flotante */
+    .floating-card {
+        position: fixed;
+        top: 200px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .weather-card-container {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+        font-weight: bold;
+    }
+
+    .close-btn {
+        position: absolute;
+        bottom: 10px;
+        z-index: 1100;
+    }
+</style>
+
+<script>
+    function showWeatherCard() {
+        var cardContainer = document.querySelector('.weather-card-container');
+        cardContainer.style.display = 'block';
+    }
+
+    function closeWeatherCard() {
+        var cardContainer = document.querySelector('.weather-card-container');
+        cardContainer.style.display = 'none';
+    }
+
+    document.getElementById('show-weather-btn').addEventListener('click', showWeatherCard);
+</script>
+
+
+{% endblock %}
